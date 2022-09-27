@@ -14,7 +14,7 @@ const roomService = RoomService.RoomService(broker);
 // WebServer code
 
 const server = http.createServer((req, res) => {});
-server.listen(PORT, () => {
+server.listen(PORT, '172.31.27.204', () => {
     console.log('Listening on port ' + PORT);
 });
 
