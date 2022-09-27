@@ -6,7 +6,7 @@ const MessageBroker = require('./message-broker.js');
 const RoomService = require('./room-service.js');
 
 process.title = 'tic-tac-emoji';
-const PORT = 80;
+const PORT = 3100;
 
 const broker = MessageBroker.MessageBroker();
 const roomService = RoomService.RoomService(broker);
