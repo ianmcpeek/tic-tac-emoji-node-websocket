@@ -6,7 +6,7 @@ const MessageBroker = require('./message-broker.js');
 const RoomService = require('./room-service.js');
 
 process.title = 'tic-tac-emoji';
-const PORT = 3100;
+const PORT = 8080;
 
 const broker = MessageBroker.MessageBroker();
 const roomService = RoomService.RoomService(broker);
@@ -19,7 +19,8 @@ server.listen(PORT, () => {
 });
 
 const socketServer = new WebSocketServer({
-    httpServer: server
+    httpServer: server,
+    autoAcceptConnections: true
 });
 
 function winningTiles(board) {
