@@ -53,7 +53,7 @@ function MessageBroker() {
         },
         postTopic: (topic, json) => {
             notifySubscribers(topic, (subscriber) => {
-                subscriber.socket.on('message', json);
+                subscriber.socket.emit('message', json);
             });
         }
     }
