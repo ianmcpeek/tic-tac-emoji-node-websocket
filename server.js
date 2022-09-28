@@ -4,6 +4,7 @@ const randomHash = require('random-hash');
 const MessageTypes = require('./message-types.js');
 const MessageBroker = require('./message-broker.js');
 const RoomService = require('./room-service.js');
+const { Server } = require('socket.io');
 
 process.title = 'tic-tac-emoji';
 
@@ -15,14 +16,11 @@ const roomService = RoomService.RoomService(broker);
 
 // WebServer code
 
-const server = http.createServer((req, res) => {});
-server.listen(PORT, hostname, () => {
-    console.log(`Server running at http://${hostname}:${PORT}`);
-});
+const httpServer = http.createServer((req, res) => {});
+const io = new Server(httpServer);
 
-const socketServer = new WebSocketServer({
-    httpServer: server,
-    autoAcceptConnections: true
+httpServer.listen(PORT, hostname, () => {
+    console.log(`Server running at http://${hostname}:${PORT}`);
 });
 
 function winningTiles(board) {
@@ -172,29 +170,43 @@ function onMessage(message) {
     }
 }
 
-socketServer.on('request', (request) => {
-    console.log('Connection from origin ' + request.origin + '.');
-    const connection = request.accept(null, request.origin);
-    console.log('Connection accepted.');
+io.on("connection", (socket) => {
+    console.log('new Connection ' + socket.id);
 
-    connection.on('message', (message) => {
-        if (message.type === 'utf8') {
-            console.log('recieved message');
 
-            try {
-                const json = JSON.parse(message.utf8Data);
-                onMessage(json);
-            } catch(error) {
-
-            }
-        }
+    socket.on('message', (message) => {
+        console.log('got a message!');
+        console.log(message);
     });
 
-    connection.on('close', (connection) => {
-        console.log((new Date()) + " Peer "
-        + connection.remoteAddress + " disconnected.");
-
-    });
-
-    roomService.createRoom(connection);
+    socket.emit('message', {
+        data: 'hey there whats up'
+    })
 });
+
+// socketServer.on('request', (request) => {
+//     console.log('Connection from origin ' + request.origin + '.');
+//     const connection = request.accept(null, request.origin);
+//     console.log('Connection accepted.');
+
+//     connection.on('message', (message) => {
+//         if (message.type === 'utf8') {
+//             console.log('recieved message');
+
+//             try {
+//                 const json = JSON.parse(message.utf8Data);
+//                 onMessage(json);
+//             } catch(error) {
+
+//             }
+//         }
+//     });
+
+//     connection.on('close', (connection) => {
+//         console.log((new Date()) + " Peer "
+//         + connection.remoteAddress + " disconnected.");
+
+//     });
+
+//     roomService.createRoom(connection);
+// });

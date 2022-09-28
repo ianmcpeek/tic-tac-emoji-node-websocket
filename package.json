@@ -7,6 +7,7 @@
     "dependencies": {
         "aws-sdk": "^2.1224.0",
         "random-hash": "^4.0.1",
+        "socket.io": "^4.5.2",
         "uuid": "^9.0.0",
         "websocket": "^1.0.34"
     }
