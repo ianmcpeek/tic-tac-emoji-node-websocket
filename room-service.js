@@ -41,7 +41,7 @@ function RoomService(messageBroker) {
         const config = {
             length: 6
         };
-        let id = randomHash.generateHash(config);
+        let id = randomHash.generateHash(config).toUpperCase();
         while (rooms.hasOwnProperty(id)) {
             id = randomHash.generateHash(config);
         }
