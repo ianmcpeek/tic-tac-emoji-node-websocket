@@ -1,10 +1,10 @@
 const randomHash = require('random-hash');
 const MessageTypes = require('./message-types');
 
-function Participant(id, connection) {
+function Participant(id, socket) {
     return {
         id,
-        connection,
+        socket,
         avatarId: -1,
         wins: 0
     };
@@ -33,7 +33,7 @@ function Room(id) {
 function RoomService(messageBroker) {
     const broker = messageBroker;
     const rooms = new Map();
-    // convenient way to pass connection with id lookup
+    // convenient way to pass socket with id lookup
     const participants = new Map();
 
     // generate id guarenteed not to conflict with existing rooms
@@ -50,9 +50,9 @@ function RoomService(messageBroker) {
 
     return {
         // when a new client connects, a room and participant is automatically created
-        createRoom: (connection) => {
+        createRoom: (socket) => {
             // create new participant
-            const participant = Participant(randomHash.generateHash({ length: 10 }), connection);
+            const participant = Participant(randomHash.generateHash({ length: 10 }), socket);
             participants.set(participant.id, participant);
             
             // create room and add participant
@@ -62,7 +62,7 @@ function RoomService(messageBroker) {
 
             // create topic for room and subscribe participant
             broker.createTopic(room.id);
-            broker.subscribe(room.id, participant.id, participant.connection);
+            broker.subscribe(room.id, participant.id, participant.socket);
             // notify new subscriber of room
             broker.postTopic(room.id, {
                 type: MessageTypes.JOIN_ROOM,
@@ -85,7 +85,7 @@ function RoomService(messageBroker) {
                     throw new Error('participant already in room!');
                 }
                 room.participantIds.add(participant.id);
-                broker.subscribe(room.id, participant.id, participant.connection);
+                broker.subscribe(room.id, participant.id, participant.socket);
 
                 // should now be enough players to create lobby
                 // post to all subscribers in room

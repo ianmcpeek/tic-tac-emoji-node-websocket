@@ -1,7 +1,7 @@
-function Subscriber(id, connection) {
+function Subscriber(id, socket) {
  return {
     id,
-    connection
+    socket
  };
 }
 
@@ -27,7 +27,7 @@ function MessageBroker() {
                 subscribers: new Map()
             });
         },
-        subscribe: (topic, id, connection) => {
+        subscribe: (topic, id, socket) => {
             if (!topics.has(topic)) {
                 throw new Error('topic does not exist. ' + topic);
             }
@@ -37,7 +37,7 @@ function MessageBroker() {
             if (subscribers.has(id)) {
                 throw new Error(id + ' is already subcribed to ' + topic);
             }
-            subscribers.set(id, Subscriber(id, connection));
+            subscribers.set(id, Subscriber(id, socket));
         },
         unsubscribe: (topic, id) => {
             if (!topics.has(topic)) {
@@ -53,7 +53,7 @@ function MessageBroker() {
         },
         postTopic: (topic, json) => {
             notifySubscribers(topic, (subscriber) => {
-                subscriber.connection.sendUTF(JSON.stringify(json));
+                subscriber.on('message', json);
             });
         }
     }

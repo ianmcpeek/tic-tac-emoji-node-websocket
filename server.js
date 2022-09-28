@@ -177,36 +177,12 @@ io.on("connection", (socket) => {
     socket.on('message', (message) => {
         console.log('got a message!');
         console.log(message);
+        onMessage(message);
     });
 
-    socket.emit('message', {
-        data: 'hey there whats up'
-    })
+    // socket.emit('message', {
+    //     data: 'hey there whats up'
+    // })
+
+    roomService.createRoom(socket);
 });
-
-// socketServer.on('request', (request) => {
-//     console.log('Connection from origin ' + request.origin + '.');
-//     const connection = request.accept(null, request.origin);
-//     console.log('Connection accepted.');
-
-//     connection.on('message', (message) => {
-//         if (message.type === 'utf8') {
-//             console.log('recieved message');
-
-//             try {
-//                 const json = JSON.parse(message.utf8Data);
-//                 onMessage(json);
-//             } catch(error) {
-
-//             }
-//         }
-//     });
-
-//     connection.on('close', (connection) => {
-//         console.log((new Date()) + " Peer "
-//         + connection.remoteAddress + " disconnected.");
-
-//     });
-
-//     roomService.createRoom(connection);
-// });
