@@ -6,7 +6,9 @@ const MessageBroker = require('./message-broker.js');
 const RoomService = require('./room-service.js');
 
 process.title = 'tic-tac-emoji';
-const PORT = 8080;
+
+const hostname = 'localhost';
+const PORT = 3000;
 
 const broker = MessageBroker.MessageBroker();
 const roomService = RoomService.RoomService(broker);
@@ -14,8 +16,8 @@ const roomService = RoomService.RoomService(broker);
 // WebServer code
 
 const server = http.createServer((req, res) => {});
-server.listen(PORT, '172.31.27.204', () => {
-    console.log('Listening on port ' + PORT);
+server.listen(PORT, hostname, () => {
+    console.log(`Server running at http://${hostname}:${PORT}`);
 });
 
 const socketServer = new WebSocketServer({
